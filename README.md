@@ -1,7 +1,7 @@
 Minesweeper Reader
 ===
 
-![](http://i.imgur.com/JKlIJbw.gifv)
+![](http://i.imgur.com/JKlIJbw.gif)
 
 ![](http://i.imgur.com/b13T5wT.png)
 
