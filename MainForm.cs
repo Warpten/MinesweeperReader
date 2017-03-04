@@ -8,11 +8,11 @@ using System.Threading;
 
 namespace MineSweeperReader
 {
-	/// <summary>
-	/// Summary description for Form1.
-	/// </summary>
-	public class Form1 : System.Windows.Forms.Form
-	{
+    /// <summary>
+    /// Summary description for Form1.
+    /// </summary>
+    public class Form1 : System.Windows.Forms.Form
+    {
         private Label lblWidth;
         private Label lblHeight;
         private Label lblMines;
@@ -20,49 +20,49 @@ namespace MineSweeperReader
         private TextBox txtHeight;
         private TextBox txtMines;
         private Button btnRead;
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private Container components = null;
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private Container components = null;
 
         private System.Windows.Forms.PictureBox[,] ButtonArray = null;
         private Button button2;
-		private System.Windows.Forms.Control[] MainControls = null;
+        private System.Windows.Forms.Control[] MainControls = null;
 
-		public Form1()
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+        public Form1()
+        {
+            //
+            // Required for Windows Form Designer support
+            //
+            InitializeComponent();
 
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
-		}
+            //
+            // TODO: Add any constructor code after InitializeComponent call
+            //
+        }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if (components != null) 
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
+        {
+            if( disposing )
+            {
+                if (components != null) 
+                {
+                    components.Dispose();
+                }
+            }
+            base.Dispose( disposing );
+        }
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.lblWidth = new System.Windows.Forms.Label();
             this.lblHeight = new System.Windows.Forms.Label();
             this.lblMines = new System.Windows.Forms.Label();
@@ -162,124 +162,124 @@ namespace MineSweeperReader
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
-		#endregion
+        }
+        #endregion
 
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		static void Main() 
-		{
-			Application.Run(new Form1());
-		}
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main() 
+        {
+            Application.Run(new Form1());
+        }
 
-	    private void btnRead_Click(object sender, System.EventArgs e)
-	    {
-	        Read(false);
-	    }
+        private void btnRead_Click(object sender, System.EventArgs e)
+        {
+            Read(false);
+        }
 
         private void Read(bool injectBack)
         {
-	        var oldSize = 0;
+            var oldSize = 0;
             if (txtWidth.Text.Length != 0)
-		        oldSize = int.Parse(txtWidth.Text) * int.Parse(txtHeight.Text);
+                oldSize = int.Parse(txtWidth.Text) * int.Parse(txtHeight.Text);
 
-		    const int iWidthAddress = 0x1005334;
+            const int iWidthAddress = 0x1005334;
             const int iHeightAddress = 0x1005338;
             const int iMinesAddress = 0x1005330;
             const int iCellBaseAddress = 0x1005340;
 
-			var pReader = new ProcessUtils();
-			var myProcesses = Process.GetProcessesByName(@"winmine");
-			
-			// take first instance of minesweeper you find
-			if (myProcesses.Length == 0)
-			{
-				MessageBox.Show(@"No MineSweeper process found!");
-				return;
-			}
-			pReader.ReadProcess = myProcesses[0];
+            var pReader = new ProcessUtils();
+            var myProcesses = Process.GetProcessesByName(@"winmine");
+            
+            // take first instance of minesweeper you find
+            if (myProcesses.Length == 0)
+            {
+                MessageBox.Show(@"No MineSweeper process found!");
+                return;
+            }
+            pReader.ReadProcess = myProcesses[0];
 
-			// open process in read memory mode
-			pReader.OpenProcess();
-			
-			int bytesRead;
+            // open process in read memory mode
+            pReader.OpenProcess();
+            
+            int bytesRead;
 
             var boardWidth = pReader.ReadProcessMemory((IntPtr)iWidthAddress, 1, out bytesRead)[0];
-			txtWidth.Text = boardWidth.ToString();
-		
+            txtWidth.Text = boardWidth.ToString();
+        
             var boardHeight = pReader.ReadProcessMemory((IntPtr)iHeightAddress, 1, out bytesRead)[0];
-			txtHeight.Text = boardHeight.ToString();
+            txtHeight.Text = boardHeight.ToString();
 
             var iMines = pReader.ReadProcessMemory((IntPtr)iMinesAddress, 1, out bytesRead)[0];
-			txtMines.Text = iMines.ToString();
+            txtMines.Text = iMines.ToString();
 
-			for (var i = oldSize - 1; i >= 0; --i)
+            for (var i = oldSize - 1; i >= 0; --i)
                 Controls.RemoveAt(Controls.Count - 1);
-			ButtonArray = new PictureBox[boardWidth, boardHeight];
+            ButtonArray = new PictureBox[boardWidth, boardHeight];
             var data = new byte[boardWidth, boardHeight];
-		    for (var y = 0; y < boardHeight; y++)
-		    {
-		        for (var x = 0; x < boardWidth; x++)
-		        {
+            for (var y = 0; y < boardHeight; y++)
+            {
+                for (var x = 0; x < boardWidth; x++)
+                {
                     ButtonArray[x, y] = new PictureBox
-		            {
-		                Location = new Point(20 + x * 16, 100 + y * 16),
-		                Name = "",
-		                Size = new Size(16, 16),
-		            };
+                    {
+                        Location = new Point(20 + x * 16, 100 + y * 16),
+                        Name = "",
+                        Size = new Size(16, 16),
+                    };
 
                     var iCellAddress = iCellBaseAddress + (32 * (y + 1)) + (x + 1);
-		            data[x, y] = pReader.ReadProcessMemory(iCellAddress, 1, out bytesRead)[0];
+                    data[x, y] = pReader.ReadProcessMemory(iCellAddress, 1, out bytesRead)[0];
 
-		            Controls.Add(ButtonArray[x, y]);
-		        }
-		    }
+                    Controls.Add(ButtonArray[x, y]);
+                }
+            }
 
-		    var remainingMineCount = iMines;
-		    for (var x = 0; x < boardWidth; ++x)
-		    {
-		        for (var y = 0; y < boardHeight; ++y)
-		        {
+            var remainingMineCount = iMines;
+            for (var x = 0; x < boardWidth; ++x)
+            {
+                for (var y = 0; y < boardHeight; ++y)
+                {
                     // If this is not a mine nor a flagged mine
-		            if (data[x, y] != 0x8F && data[x, y] != 0x8E)
-		            {
+                    if (data[x, y] != 0x8F && data[x, y] != 0x8E)
+                    {
                         var nearbyCount = 0x40;
-		                // 1 2 3
-		                // 4   5
-		                // 6 7 8
-		                if (x > 0 && y > 0)              nearbyCount += (data[x - 1, y - 1] & 0x80) == 0x80 ? 1 : 0;
-		                if (y > 0)                       nearbyCount += (data[x, y - 1] & 0x80) == 0x80 ? 1 : 0;
-		                if (x + 1 < boardWidth && y > 0) nearbyCount += (data[x + 1, y - 1] & 0x80) == 0x80 ? 1 : 0;
+                        // 1 2 3
+                        // 4   5
+                        // 6 7 8
+                        if (x > 0 && y > 0)              nearbyCount += (data[x - 1, y - 1] & 0x80) == 0x80 ? 1 : 0;
+                        if (y > 0)                       nearbyCount += (data[x, y - 1] & 0x80) == 0x80 ? 1 : 0;
+                        if (x + 1 < boardWidth && y > 0) nearbyCount += (data[x + 1, y - 1] & 0x80) == 0x80 ? 1 : 0;
 
-		                if (x > 0)              nearbyCount += (data[x - 1, y] & 0x80) == 0x80 ? 1 : 0;
-		                if (x + 1 < boardWidth) nearbyCount += (data[x + 1, y] & 0x80) == 0x80 ? 1 : 0;
+                        if (x > 0)              nearbyCount += (data[x - 1, y] & 0x80) == 0x80 ? 1 : 0;
+                        if (x + 1 < boardWidth) nearbyCount += (data[x + 1, y] & 0x80) == 0x80 ? 1 : 0;
 
-		                if (x > 0 && y + 1 < boardHeight)              nearbyCount += (data[x - 1, y + 1] & 0x80) == 0x80 ? 1 : 0;
-		                if (y + 1 < boardHeight)                       nearbyCount += (data[x, y + 1] & 0x80) == 0x80 ? 1 : 0;
-		                if (x + 1 < boardWidth && y + 1 < boardHeight) nearbyCount += (data[x + 1, y + 1] & 0x80) == 0x80 ? 1 : 0;
-		                data[x, y] = (byte)nearbyCount;
-		            }
-		            else if (data[x, y] == 0x8F)
-		            {
-		                remainingMineCount -= 1;
+                        if (x > 0 && y + 1 < boardHeight)              nearbyCount += (data[x - 1, y + 1] & 0x80) == 0x80 ? 1 : 0;
+                        if (y + 1 < boardHeight)                       nearbyCount += (data[x, y + 1] & 0x80) == 0x80 ? 1 : 0;
+                        if (x + 1 < boardWidth && y + 1 < boardHeight) nearbyCount += (data[x + 1, y + 1] & 0x80) == 0x80 ? 1 : 0;
+                        data[x, y] = (byte)nearbyCount;
+                    }
+                    else if (data[x, y] == 0x8F)
+                    {
+                        remainingMineCount -= 1;
                         if (remainingMineCount > 0)
-		                    data[x, y] = 0x8E; // Mark as flagged mine
-		            }
+                            data[x, y] = 0x8E; // Mark as flagged mine
+                    }
 
-		            var sourceImage = Properties.Resources.Sprites;
+                    var sourceImage = Properties.Resources.Sprites;
                     var destImage = new Bitmap(sourceImage.Height / 16, sourceImage.Width);
                     var imageIndex = 1;
-		            switch (data[x, y])
-		            {
-		                case 0x40: imageIndex = 15; break;
+                    switch (data[x, y])
+                    {
+                        case 0x40: imageIndex = 15; break;
                         case 0x8E: case 0x8F: imageIndex = 5; break;
                         default:
-		                    if (data[x, y] > 0x40 & data[x, y] <= 0x48)
-		                        imageIndex = 14 - (data[x, y] - 0x40) + 1;
-		                    break;
-		            }
+                            if (data[x, y] > 0x40 & data[x, y] <= 0x48)
+                                imageIndex = 14 - (data[x, y] - 0x40) + 1;
+                            break;
+                    }
                     using (var gfx = Graphics.FromImage(destImage))
                     {
                         gfx.DrawImage(sourceImage, new RectangleF(0, 0, 16, 16),
@@ -288,8 +288,8 @@ namespace MineSweeperReader
                             GraphicsUnit.Pixel);
                         ButtonArray[x, y].Image = destImage;
                     }
-		        }
-		    }
+                }
+            }
 
             if (!injectBack)
                 pReader.CloseHandle();
@@ -316,13 +316,13 @@ namespace MineSweeperReader
                     // close process handle
                     pReader.CloseHandle();
                 }).Start();
-		}
+        }
 
-		private void Form1_Load(object sender, System.EventArgs e)
-		{
-			MainControls = new Control[this.Controls.Count];
-			this.Controls.CopyTo(MainControls,0);
-		}
+        private void Form1_Load(object sender, System.EventArgs e)
+        {
+            MainControls = new Control[this.Controls.Count];
+            this.Controls.CopyTo(MainControls,0);
+        }
 
         private void button2_Click(object sender, EventArgs e)
         {
@@ -385,5 +385,5 @@ namespace MineSweeperReader
             // return mouse 
             Cursor.Position = oldPos;
         }
-	}
+    }
 }
